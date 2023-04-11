@@ -1,0 +1,108 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<!doctype html>
+<html>
+  <head>
+    <title>練習</title>
+    <script type="module">
+      import { generatePdf } from './renshuu.js';
+
+      function validateFileInputAndGetValue(input) {
+        if (input.files.length == 0) {
+          input.classList.add('is-invalid');
+          return null;          
+        }
+
+        input.classList.remove('is-invalid');
+        return input.files[0];
+      }
+
+      function filterCharactersListAndGetValue(charString) {
+        // We only want to use characters we can display; without a better
+        // metric for this, we simply remove any marks, separators, and control
+        // characters
+        return charString.replaceAll(/(\p{M}|\p{Z}|\p{C})/gu, '');
+      }
+
+      function validateCharactersInputAndGetValue(input) {
+        const remainingChars = filterCharactersListAndGetValue(input.value);
+        if (remainingChars.length == 0) {
+          input.classList.add('is-invalid');
+          return null;
+        }
+
+        input.classList.remove('is-invalid');
+        return remainingChars;
+      }
+
+      window.onload = () => {
+        const fontInput = document.getElementById('font-file');
+        fontInput.addEventListener('change', () => {
+          validateFileInputAndGetValue(fontInput);
+        });
+
+        const charactersInput = document.getElementById('characters');
+        charactersInput.addEventListener('change', () => {
+          validateCharactersInputAndGetValue(charactersInput);
+        });
+
+        const form = document.getElementById('pdf-form');
+        form.addEventListener('submit', evt => {
+          // Stay on the current page
+          evt.preventDefault();
+
+          const fontFile = validateFileInputAndGetValue(fontInput);
+          const charString = validateCharactersInputAndGetValue(charactersInput);
+          if (fontFile && charString) {
+            // Provide characters as an array
+            const characters = charString.split('');
+
+            generatePdf(fontFile, characters);
+          }
+        });
+      };
+    </script>
+    <link rel="stylesheet" href="scss/styles.scss"/>
+  </head>
+  <body>
+    <div class="container">
+      <header class="col-lg-8 mx-auto mb-3 mt-2 border-bottom">
+        <span class="fs-4">
+          <ruby>
+            練習 <rp>(</rp><rt>renshū</rt><rp>)</rp>
+          </ruby>
+        </span>
+      </header>
+
+      <main class="col-lg-8 mx-auto">
+        <div class="bg-light my-3 p-2 rounded">
+          Generate a custom PDF with your choice of font and a custom set of characters to practice.
+        </div>
+
+        <form id="pdf-form">
+          <div class="mb-3">
+            <label class="form-label" for="font-file">Font File</label>
+            <input id="font-file" class="form-control" type="file" name="font-file" accept="font/otf,font/ttf"/>
+            <div class="invalid-feedback">
+              Please specify a font file.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="characters">Characters</label>
+            <textarea id="characters" class="form-control" name="characters"></textarea>
+            <div class="invalid-feedback">
+              Please specify one or more characters to render.
+            </div>
+          </div>
+
+          <div class="float-end">
+            <input class="btn btn-primary" type="submit"/>
+          </div>
+        </form>
+      </main>
+    </div>
+  </body>
+</html>

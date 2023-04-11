@@ -1,0 +1,26 @@
+{
+  "name": "renshuu",
+  "version": "0.1.0",
+  "description": "Generate custom kanji practice sheets as PDFs",
+  "type": "module",
+  "scripts": {
+    "start": "parcel serve index.html",
+    "build": "parcel build index.html"
+  },
+  "author": {
+    "name": "Seán de Búrca",
+    "email": "leftmostcat@gmail.com"
+  },
+  "license": "MPL-2.0",
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "jspdf": "^2.5.1",
+    "opentype.js": "^1.3.4"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.8.3",
+    "buffer": "^5.7.1",
+    "parcel": "^2.8.3",
+    "process": "^0.11.10"
+  }
+}
